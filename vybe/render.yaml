@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: vybe
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_NAME
+        value: vybe_social
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
