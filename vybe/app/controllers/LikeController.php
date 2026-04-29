@@ -34,5 +34,4 @@ class LikeController
         app_redirect($redirectTo);
     }
 }
-?>
 

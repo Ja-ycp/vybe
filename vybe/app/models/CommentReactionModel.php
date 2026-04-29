@@ -46,4 +46,3 @@ class CommentReactionModel
         return $stmt->fetch() !== false;
     }
 }
-?>

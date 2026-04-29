@@ -338,4 +338,3 @@ function app_format_datetime(string $timestamp): string
 {
     return date('M j, Y g:i A', strtotime($timestamp));
 }
-?>

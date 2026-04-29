@@ -9,5 +9,4 @@ if ($conn) {
 } else {
   echo "Connection failed.";
 }
-?>
 

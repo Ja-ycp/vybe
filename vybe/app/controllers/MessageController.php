@@ -202,4 +202,3 @@ class MessageController
         app_redirect($redirectTo);
     }
 }
-?>

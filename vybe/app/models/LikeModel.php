@@ -55,5 +55,4 @@ class LikeModel
         return $stmt->fetch() !== false;
     }
 }
-?>
 

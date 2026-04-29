@@ -46,5 +46,4 @@ class FeedController
         return $posts;
     }
 }
-?>
 

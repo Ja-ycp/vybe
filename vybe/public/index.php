@@ -99,5 +99,4 @@ if (!method_exists($controllerInstance, $action)) {
 }
 
 $controllerInstance->{$action}($id);
-?>
 

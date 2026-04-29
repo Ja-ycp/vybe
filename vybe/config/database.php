@@ -327,5 +327,4 @@ class Database
         return $this->lastError;
     }
 }
-?>
 

@@ -156,5 +156,4 @@ class UserModel
         return $stmt->fetchAll();
     }
 }
-?>
 

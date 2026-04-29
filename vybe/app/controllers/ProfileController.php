@@ -221,5 +221,4 @@ class ProfileController
         return $posts;
     }
 }
-?>
 

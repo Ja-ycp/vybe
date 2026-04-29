@@ -171,5 +171,4 @@ class CommentController
         app_redirect($redirectTo);
     }
 }
-?>
 

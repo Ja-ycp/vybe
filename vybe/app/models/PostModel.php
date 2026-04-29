@@ -135,5 +135,4 @@ class PostModel
                   LEFT JOIN users shared_u ON shared_u.id = shared_p.user_id";
     }
 }
-?>
 

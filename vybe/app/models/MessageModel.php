@@ -234,4 +234,3 @@ class MessageModel
         return true;
     }
 }
-?>

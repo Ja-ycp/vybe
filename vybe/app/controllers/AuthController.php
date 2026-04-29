@@ -140,5 +140,4 @@ class AuthController
         app_redirect(app_route('Auth', 'login'));
     }
 }
-?>
 

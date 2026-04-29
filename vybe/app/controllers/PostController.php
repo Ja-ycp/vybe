@@ -218,5 +218,4 @@ class PostController
         return $post;
     }
 }
-?>
 
