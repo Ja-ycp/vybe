@@ -64,17 +64,19 @@ class MessageModel
 
     public function markConversationAsRead(int $userId, int $otherUserId): bool
     {
-        $query = "UPDATE {$this->table} message
-                  LEFT JOIN message_user_deletions hidden_message
-                    ON hidden_message.message_id = message.id
-                   AND hidden_message.user_id = ?
-                  SET message.is_read = 1
-                  WHERE message.sender_id = ?
-                    AND message.receiver_id = ?
-                    AND message.is_read = 0
-                    AND hidden_message.id IS NULL";
+        $query = "UPDATE {$this->table}
+                  SET is_read = 1
+                  WHERE sender_id = ?
+                    AND receiver_id = ?
+                    AND is_read = 0
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM message_user_deletions hidden_message
+                        WHERE hidden_message.message_id = {$this->table}.id
+                          AND hidden_message.user_id = ?
+                    )";
         $stmt = $this->conn->prepare($query);
-        return $stmt->execute([$userId, $otherUserId, $userId]);
+        return $stmt->execute([$otherUserId, $userId, $userId]);
     }
 
     public function getInbox(int $userId): array
@@ -166,10 +168,16 @@ class MessageModel
 
     public function removeMessageForUser(int $messageId, int $userId): bool
     {
-        $query = "INSERT IGNORE INTO message_user_deletions (message_id, user_id)
-                  VALUES (?, ?)";
+        $query = "INSERT INTO message_user_deletions (message_id, user_id)
+                  SELECT ?, ?
+                  WHERE NOT EXISTS (
+                      SELECT 1
+                      FROM message_user_deletions
+                      WHERE message_id = ?
+                        AND user_id = ?
+                  )";
         $stmt = $this->conn->prepare($query);
-        return $stmt->execute([$messageId, $userId]);
+        return $stmt->execute([$messageId, $userId, $messageId, $userId]);
     }
 
     public function unsendMessage(int $messageId, int $senderId): bool

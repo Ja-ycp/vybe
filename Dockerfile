@@ -2,8 +2,8 @@ FROM php:8.2-cli
 
 WORKDIR /app
 
-# Required by config/database.php (PDO MySQL)
-RUN docker-php-ext-install pdo_mysql
+# Required by config/database.php (PDO MySQL + SQLite fallback)
+RUN docker-php-ext-install pdo_mysql pdo_sqlite
 
 # App currently lives in the repo subdirectory "vybe"
 COPY vybe/ /app
