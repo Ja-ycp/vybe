@@ -44,11 +44,22 @@ function app_absolute_url(string $path = ''): string
         return $path;
     }
 
-    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-        || (($_SERVER['SERVER_PORT'] ?? '') === '443');
+    $forwardedProto = trim((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+    if ($forwardedProto !== '') {
+        $protoParts = explode(',', $forwardedProto);
+        $forwardedProto = strtolower(trim($protoParts[0]));
+    }
+
+    $isHttps = $forwardedProto === 'https'
+        || ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (($_SERVER['SERVER_PORT'] ?? '') === '443'));
 
     $scheme = $isHttps ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $host = trim((string) ($_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HTTP_HOST'] ?? 'localhost'));
+    if (str_contains($host, ',')) {
+        $hostParts = explode(',', $host);
+        $host = trim($hostParts[0]);
+    }
 
     return $scheme . '://' . $host . app_url($path);
 }
@@ -108,8 +119,16 @@ function app_normalize_redirect_target(string $url): string
     return app_route('Feed');
 }
 
-function app_redirect(string $url): void
+function app_redirect(string $url, bool $allowExternal = false): void
 {
+    if ($allowExternal) {
+        $url = trim($url);
+        if (preg_match('#^https?://#i', $url) === 1) {
+            header('Location: ' . $url);
+            exit;
+        }
+    }
+
     header('Location: ' . app_normalize_redirect_target($url));
     exit;
 }

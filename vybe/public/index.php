@@ -35,7 +35,7 @@ $routes = [
         'file' => APP_ROOT . '/app/controllers/AuthController.php',
         'class' => 'AuthController',
         'requiresAuth' => false,
-        'actions' => ['login', 'register', 'logout'],
+        'actions' => ['login', 'register', 'logout', 'google', 'googleCallback'],
     ],
     'Feed' => [
         'file' => APP_ROOT . '/app/controllers/FeedController.php',

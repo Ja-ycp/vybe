@@ -22,6 +22,17 @@
             <div class="alert alert-danger mb-3"><?php echo app_e($error); ?></div>
         <?php endif; ?>
 
+        <?php if (!empty($googleAuthEnabled)): ?>
+            <a href="<?php echo app_e($googleAuthUrl ?? app_route('Auth', 'google')); ?>" class="btn btn-google-auth w-100">
+                <span class="google-mark" aria-hidden="true">G</span>
+                Continue with Google
+            </a>
+
+            <div class="auth-divider" role="separator" aria-label="or">
+                <span>or use username</span>
+            </div>
+        <?php endif; ?>
+
         <form method="POST" class="login-form">
             <input type="hidden" name="_token" value="<?php echo app_csrf_token(); ?>">
 

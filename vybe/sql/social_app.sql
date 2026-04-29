@@ -12,10 +12,14 @@ CREATE TABLE users (
   id INT PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(50) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
+  email VARCHAR(190) DEFAULT NULL,
+  google_id VARCHAR(191) DEFAULT NULL,
+  auth_provider VARCHAR(24) NOT NULL DEFAULT 'local',
   full_name VARCHAR(100) NOT NULL,
   bio TEXT,
   profile_image VARCHAR(255) DEFAULT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_google_id (google_id)
 );
 
 -- Posts Table
@@ -113,6 +117,8 @@ CREATE INDEX idx_messages_receiver_read ON messages(receiver_id, is_read);
 CREATE INDEX idx_messages_reply_to ON messages(reply_to_message_id);
 CREATE INDEX idx_message_reactions_message ON message_reactions(message_id);
 CREATE INDEX idx_message_user_deletions_user ON message_user_deletions(user_id, message_id);
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_auth_provider ON users(auth_provider);
 
 -- Sample Data (from backup db.json)
 INSERT INTO users (username, password, full_name, bio) VALUES

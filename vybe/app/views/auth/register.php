@@ -23,6 +23,17 @@
             <div class="alert alert-danger mb-3"><?php echo app_e($error); ?></div>
         <?php endif; ?>
 
+        <?php if (!empty($googleAuthEnabled)): ?>
+            <a href="<?php echo app_e($googleAuthUrl ?? app_route('Auth', 'google')); ?>" class="btn btn-google-auth w-100">
+                <span class="google-mark" aria-hidden="true">G</span>
+                Sign up with Google
+            </a>
+
+            <div class="auth-divider" role="separator" aria-label="or">
+                <span>or create with email and password</span>
+            </div>
+        <?php endif; ?>
+
         <form method="POST" enctype="multipart/form-data" class="login-form register-form">
             <input type="hidden" name="_token" value="<?php echo app_csrf_token(); ?>">
 

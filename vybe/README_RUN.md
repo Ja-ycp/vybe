@@ -16,10 +16,20 @@ Review [database.php](/C:/xampp/htdocs/vybe/config/database.php) and update the 
 ## 4. Launch the App
 Open `http://localhost/vybe/public/`
 
-## 5. Sample Login Accounts
+## 5. Enable Google Sign-In (Optional)
+1. In Google Cloud Console, create OAuth credentials for a **Web application**.
+2. Add your callback URL to Authorized redirect URIs:
+   - Local: `http://localhost/vybe/public/index.php?controller=Auth&action=googleCallback`
+   - Render: `https://<your-render-domain>/index.php?controller=Auth&action=googleCallback`
+3. Set environment variables:
+   - `GOOGLE_CLIENT_ID`
+   - `GOOGLE_CLIENT_SECRET`
+   - Optional: `GOOGLE_REDIRECT_URI` (use this if you want to force one callback URL)
+
+## 6. Sample Login Accounts
 - `johnp / password123`
 
-## 6. Suggested Demo Flow
+## 7. Suggested Demo Flow
 1. Register a new account or log in with a sample user.
 2. Create a post with or without an image.
 3. Like a post and add a comment.

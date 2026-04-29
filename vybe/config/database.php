@@ -116,7 +116,7 @@ class Database
                 $this->dbName
             );
 
-            return new PDO(
+            $pdo = new PDO(
                 $dsn,
                 $this->username,
                 $this->password,
@@ -127,6 +127,9 @@ class Database
                     PDO::ATTR_TIMEOUT => 10,
                 ]
             );
+
+            $this->ensureUserAuthColumns($pdo, 'mysql');
+            return $pdo;
         } catch (PDOException $exception) {
             $this->lastError = $exception->getMessage();
             error_log(
@@ -184,6 +187,7 @@ class Database
             $pdo->exec('PRAGMA foreign_keys = ON');
 
             $this->createSqliteSchema($pdo);
+            $this->ensureUserAuthColumns($pdo, 'sqlite');
             if ($isNewDatabase) {
                 $this->seedSqlite($pdo);
             }
@@ -203,6 +207,9 @@ class Database
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
+                email TEXT DEFAULT NULL,
+                google_id TEXT DEFAULT NULL,
+                auth_provider TEXT NOT NULL DEFAULT 'local',
                 full_name TEXT NOT NULL,
                 bio TEXT,
                 profile_image TEXT DEFAULT NULL,
@@ -288,11 +295,96 @@ class Database
             'CREATE INDEX IF NOT EXISTS idx_messages_reply_to ON messages(reply_to_message_id)',
             'CREATE INDEX IF NOT EXISTS idx_message_reactions_message ON message_reactions(message_id)',
             'CREATE INDEX IF NOT EXISTS idx_message_user_deletions_user ON message_user_deletions(user_id, message_id)',
+            'CREATE UNIQUE INDEX IF NOT EXISTS idx_users_google_id ON users(google_id)',
+            'CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)',
+            'CREATE INDEX IF NOT EXISTS idx_users_auth_provider ON users(auth_provider)',
         ];
 
         foreach ($statements as $statement) {
             $pdo->exec($statement);
         }
+    }
+
+    private function ensureUserAuthColumns(PDO $pdo, ?string $driverOverride = null): void
+    {
+        $driver = $driverOverride ?? $this->driver;
+
+        $columns = $this->getUserColumns($pdo, $driver);
+        if (!isset($columns['email'])) {
+            $this->addUserColumn($pdo, $driver, 'email', "VARCHAR(190) DEFAULT NULL", 'TEXT DEFAULT NULL');
+        }
+
+        if (!isset($columns['google_id'])) {
+            $this->addUserColumn($pdo, $driver, 'google_id', "VARCHAR(191) DEFAULT NULL", 'TEXT DEFAULT NULL');
+        }
+
+        if (!isset($columns['auth_provider'])) {
+            $this->addUserColumn($pdo, $driver, 'auth_provider', "VARCHAR(24) NOT NULL DEFAULT 'local'", "TEXT NOT NULL DEFAULT 'local'");
+        }
+
+        $pdo->exec("UPDATE users SET auth_provider = 'local' WHERE auth_provider IS NULL OR auth_provider = ''");
+
+        if ($driver === 'sqlite') {
+            $pdo->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_users_google_id ON users(google_id)');
+            $pdo->exec('CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)');
+            $pdo->exec('CREATE INDEX IF NOT EXISTS idx_users_auth_provider ON users(auth_provider)');
+            return;
+        }
+
+        $existingIndexes = [];
+        foreach ($pdo->query('SHOW INDEX FROM users') as $indexRow) {
+            $indexName = (string) ($indexRow['Key_name'] ?? '');
+            if ($indexName !== '') {
+                $existingIndexes[$indexName] = true;
+            }
+        }
+
+        if (!isset($existingIndexes['idx_users_google_id'])) {
+            $pdo->exec('CREATE UNIQUE INDEX idx_users_google_id ON users (google_id)');
+        }
+
+        if (!isset($existingIndexes['idx_users_email'])) {
+            $pdo->exec('CREATE INDEX idx_users_email ON users (email)');
+        }
+
+        if (!isset($existingIndexes['idx_users_auth_provider'])) {
+            $pdo->exec('CREATE INDEX idx_users_auth_provider ON users (auth_provider)');
+        }
+    }
+
+    private function getUserColumns(PDO $pdo, string $driver): array
+    {
+        $columns = [];
+
+        if ($driver === 'sqlite') {
+            foreach ($pdo->query('PRAGMA table_info(users)') as $row) {
+                $name = strtolower((string) ($row['name'] ?? ''));
+                if ($name !== '') {
+                    $columns[$name] = true;
+                }
+            }
+
+            return $columns;
+        }
+
+        foreach ($pdo->query('SHOW COLUMNS FROM users') as $row) {
+            $name = strtolower((string) ($row['Field'] ?? ''));
+            if ($name !== '') {
+                $columns[$name] = true;
+            }
+        }
+
+        return $columns;
+    }
+
+    private function addUserColumn(PDO $pdo, string $driver, string $name, string $mysqlDefinition, string $sqliteDefinition): void
+    {
+        if ($driver === 'sqlite') {
+            $pdo->exec(sprintf('ALTER TABLE users ADD COLUMN %s %s', $name, $sqliteDefinition));
+            return;
+        }
+
+        $pdo->exec(sprintf('ALTER TABLE users ADD COLUMN %s %s', $name, $mysqlDefinition));
     }
 
     private function seedSqlite(PDO $pdo): void
