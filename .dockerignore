@@ -1,0 +1,9 @@
+.git
+.gitignore
+**/.DS_Store
+**/Thumbs.db
+vybe/backups
+vybe/docs
+vybe/dist
+vybe/tmp_home.html
+**/*.log
