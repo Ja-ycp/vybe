@@ -20,7 +20,9 @@ $conn = $db->getConnection();
 
 if (!$conn) {
     http_response_code(500);
-    echo 'Database connection failed. Please check your configuration.';
+    $lastError = $db->getLastError() ?? 'unknown';
+    error_log('Database connection failed in bootstrap: ' . $lastError);
+    echo 'Database connection failed. Verify DB_HOST, DB_PORT, DB_NAME, DB_USER, and DB_PASSWORD.';
     exit;
 }
 
