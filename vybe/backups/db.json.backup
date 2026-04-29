@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "id": "user-7f978507-37bf-4504-900d-76ca5a31db60",
+      "name": "john clifford",
+      "username": "johnp",
+      "role": "New member",
+      "bio": "me lang",
+      "passwordHash": "$2b$10$6iWUy7OsleTeI6e67X/msuJiC0qvSqREaIoQUuG0rM62f2hJiWY8i",
+      "createdAt": 1774368765813
+    },
+    {
+      "id": "user-88d94ab4-c466-442d-b6ce-ce3041aa688a",
+      "name": "kathy P",
+      "username": "kathyp",
+      "role": "New member",
+      "bio": "i love kathy",
+      "passwordHash": "$2b$10$jO03zELd/qdR5IzVP9v90O4ghTMlEyvN0KWWUT0zUq6X6HwImVwKa",
+      "createdAt": 1774368911945
+    }
+  ],
+  "posts": [],
+  "memories": []
+}

@@ -1,0 +1,18 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="720" rx="48" fill="#F8F3FF"/>
+  <rect x="60" y="66" width="1080" height="588" rx="40" fill="url(#paint0_linear_2_2)"/>
+  <path d="M839 153C890.5 109 981.5 102.5 1029 146.5C1076.5 190.5 1062 269 1010.5 313C959 357 868 363.5 820.5 319.5C773 275.5 787.5 197 839 153Z" fill="white" fill-opacity="0.18"/>
+  <rect x="132" y="150" width="208" height="24" rx="12" fill="white" fill-opacity="0.82"/>
+  <rect x="132" y="194" width="418" height="28" rx="14" fill="white"/>
+  <rect x="132" y="240" width="286" height="24" rx="12" fill="white" fill-opacity="0.82"/>
+  <circle cx="248" cy="450" r="86" fill="white" fill-opacity="0.18"/>
+  <rect x="392" y="374" width="242" height="152" rx="24" fill="white" fill-opacity="0.16"/>
+  <rect x="670" y="336" width="296" height="218" rx="28" fill="white" fill-opacity="0.12"/>
+  <text x="132" y="320" fill="white" font-family="Arial, sans-serif" font-size="58" font-weight="700">Process belongs in the feed too</text>
+  <defs>
+    <linearGradient id="paint0_linear_2_2" x1="60" y1="66" x2="1140" y2="654" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7B1FA2"/>
+      <stop offset="1" stop-color="#C2185B"/>
+    </linearGradient>
+  </defs>
+</svg>
