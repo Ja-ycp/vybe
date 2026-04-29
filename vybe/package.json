@@ -1,9 +1,0 @@
-{
-  "name": "vybe",
-  "private": true,
-  "version": "1.0.0",
-  "description": "Vybe PHP social app deployment manifest for Render detection",
-  "scripts": {
-    "start": "php -S 0.0.0.0:${PORT:-10000} -t public"
-  }
-}
